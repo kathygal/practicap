@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BADAYS - Streetwear</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url('Fondo pagina.jpg') center/cover fixed;
+        }
+
+        @keyframes neonGlow {
+            0%, 100% { text-shadow: 0 0 8px #0ff, 0 0 16px #0ff, 0 0 32px #0ff; }
+            50% { text-shadow: 0 0 12px #ff0, 0 0 24px #ff0, 0 0 40px #ff0; }
+        }
+
+        h1 {
+            color: #fff;
+            animation: neonGlow 1.5s infinite alternate;
+        }
+
+        .neon-button, .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .neon-button:hover, .product-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #ff0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+        }
+
+        .modal-content {
+            background: #222;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #0ff;
+            box-shadow: 0 0 15px #0ff;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .modal-body {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="container mx-auto px-4 text-center">
+        <header class="py-8">
+            <h1 class="text-4xl font-bold">BADAYS - Streetwear</h1>
+        </header>
+
+        <div class="flex justify-center space-x-4 mb-8">
+            <button id="cart-toggle" class="neon-button text-white font-bold py-2 px-4 rounded">🛒 Ver Carrito (<span id="cart-count">0</span>)</button>
+            <button id="info-toggle" class="neon-button text-white font-bold py-2 px-4 rounded">ℹ️ Información</button>
+            <button id="home-button" class="neon-button text-white font-bold py-2 px-4 rounded">🏠 Inicio</button>
+        </div>
+
+        <!-- Modal de Carrito -->
+        <div id="cart-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="text-2xl font-bold">Carrito de Compras</h2>
+                    <button id="close-cart" class="text-red-500 hover:text-red-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="cart-items" class="modal-body"></div>
+                <div class="modal-footer">
+                    <strong>Total:</strong>
+                    <span id="cart-total" class="font-bold text-xl">$0.00</span>
+                </div>
+                <button id="checkout-btn" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4">
+                    Finalizar Compra
+                </button>
+            </div>
+        </div>
+
+        <div id="info-modal" class="modal">
+            <div class="modal-content">
+                <h2 class="text-2xl font-bold">Información de la Tienda</h2>
+                <p>🏪 <strong>UNIDAD EDUCATIVA MUNICIPAL TÉCNICO EN CIENCIAS "SAN FRANCISCO DE QUITO"</strong> - KATHERINE GALEAS</p>
+
+                <button id="close-info" class="mt-4 text-red-500 hover:text-red-700">❌ Cerrar</button>
+            </div>
+        </div>
+
+        <div id="product-container" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+    </div>
+    <script>
+        document.getElementById('home-button').addEventListener('click', () => {
+            window.location.href = 'pagina_principal.html'; // Cambia 'index.html' por la URL de la página principal
+        });
+    </script>
+
+    <script>
+        const productos = [
+            { id: 1, nombre: 'Camiseta Streetwear', imagen: 'prenda1.jpg', precio: 2500, talla: ['M', 'L', 'XL'], composicion: '100% algodón' },
+            { id: 2, nombre: 'Camiseta Streetwear', imagen: 'prenda2.jpg', precio: 2000, talla: ['M', 'L', 'XL'], composicion: '100% algodón' },
+            { id: 3, nombre: 'Chaqueta Streetwear', imagen: 'prenda3.jpg', precio: 4000, talla: ['S', 'M', 'L'], composicion: '70% poliéster, 30% algodón' },
+            { id: 4, nombre: 'Pantalón Streetwear', imagen: 'prenda4.webp', precio: 3000, talla: ['30', '32', '34'], composicion: '80% poliéster, 20% elastano' },
+            { id: 5, nombre: 'Chaqueta Streetwear', imagen: 'prenda5.jpg', precio: 4000, talla: ['S', 'M', 'L'], composicion: '70% poliéster, 30% algodón' },
+            { id: 6, nombre: 'Camiseta Streetwear', imagen: 'prenda6.jpg', precio: 2000, talla: ['M', 'L', 'XL'], composicion: '100% algodón' },
+            { id: 7, nombre: 'Camiseta Streetwear', imagen: 'prenda7.jpg', precio: 2500, talla: ['M', 'L', 'XL'], composicion: '100% algodón' },
+            { id: 8, nombre: 'Chaqueta Streetwear', imagen: 'chaqueta1.jpg', precio: 4000, talla: ['S', 'M', 'L'], composicion: '70% poliéster, 30% algodón' },
+            { id: 9, nombre: 'Pantalón Streetwear', imagen: 'pantalon1.jpg', precio: 3500, talla: ['30', '32', '34'], composicion: '80% poliéster, 20% elastano' },
+            { id: 10, nombre: 'Camiseta Streetwear', imagen: 'camiseta1.jpg', precio: 2500, talla: ['M', 'L', 'XL'], composicion: '100% algodón' },
+            { id: 11, nombre: 'Chaqueta Streetwear', imagen: 'chaqueta2.jpg', precio: 4000, talla: ['S', 'M', 'L'], composicion: '70% poliéster, 30% algodón' },
+            { id: 12, nombre: 'Pantalón Streetwear', imagen: 'pantalon2.avif', precio: 3000, talla: ['30', '32', '34'], composicion: '80% poliéster, 20% elastano' },
+            { id: 13, nombre: 'Camiseta Streetwear', imagen: 'camiseta2.webp', precio: 2000, talla: ['M', 'L', 'XL'], composicion: '100% algodón' },
+            { id: 14, nombre: 'Chaqueta Streetwear', imagen: 'chaqueta3.jpg', precio: 4000, talla: ['S', 'M', 'L'], composicion: '70% poliéster, 30% algodón' },
+            { id: 15, nombre: 'Pantalón Streetwear', imagen: 'pantalon3.jpg', precio: 3000, talla: ['30', '32', '34'], composicion: '80% poliéster, 20% elastano' },
+            { id: 16, nombre: 'Camiseta Streetwear', imagen: 'camiseta3.webp', precio: 2000, talla: ['M', 'L', 'XL'], composicion: '100% algodón' },
+            { id: 17, nombre: 'Chaqueta Streetwear', imagen: 'chaqueta4.webp', precio: 4000, talla: ['S', 'M', 'L'], composicion: '70% poliéster, 30% algodón' },
+            { id: 18, nombre: 'Pantalón Streetwear', imagen: 'pantalon4.jpg', precio: 2500, talla: ['30', '32', '34'], composicion: '80% poliéster, 20% elastano' },
+            { id: 19, nombre: 'Camiseta Streetwear', imagen: 'camiseta4.avif', precio: 2500, talla: ['M', 'L', 'XL'], composicion: '100% algodón' },
+            { id: 20, nombre: 'Camiseta Streetwear', imagen: 'camiseta5.jpg', precio: 2500, talla: ['M', 'L', 'XL'], composicion: '100% algodón' }
+        ];
+
+        let carrito = [];
+
+        function renderProductos() {
+            const productContainer = document.getElementById('product-container');
+            productContainer.innerHTML = productos.map(p => `
+                <div class="product-card rounded-lg p-4 text-center bg-opacity-10 border border-blue-500 shadow-lg">
+                    <img src="${p.imagen}" alt="${p.nombre}" class="w-full h-64 object-cover rounded-md mb-4">
+                    <h3 class="font-bold text-xl mb-2">${p.nombre}</h3>
+                    <p class="font-bold text-green-400 mb-4">$${(p.precio / 100).toFixed(2)}</p>
+                    <p class="text-sm mb-4">${p.composicion}</p>
+                    <div class="mb-4">
+                        <span class="font-semibold">Tallas:</span>
+                        <div class="flex justify-center space-x-2">
+                            ${p.talla.map(t => `
+                                <button onclick="selectTalla(${p.id}, '${t}')" class="bg-gray-800 text-white px-3 py-1 rounded-full text-sm">${t}</button>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <button onclick="agregarAlCarrito(${p.id})" class="neon-button w-full text-white font-bold py-2 px-4 rounded">Comprar</button>
+                </div>
+            `).join('');
+        }
+
+        let selectedTallas = {};
+
+        function selectTalla(id, talla) {
+            selectedTallas[id] = talla;
+            console.log('Talla seleccionada para el producto', id, talla);
+        }
+
+        function agregarAlCarrito(id) {
+            const producto = productos.find(p => p.id === id);
+            if (producto && selectedTallas[id]) {
+                carrito.push({ ...producto, talla: selectedTallas[id] });
+                actualizarCarrito();
+            } else {
+                alert('Por favor, selecciona una talla');
+            }
+        }
+
+        function actualizarCarrito() {
+            document.getElementById('cart-items').innerHTML = carrito.map(p => `
+                <div class="flex justify-between items-center py-2">
+                    <div>${p.nombre} (${p.talla})</div>
+                    <div>$${(p.precio / 100).toFixed(2)}</div>
+                    <button onclick="eliminarDelCarrito(${p.id})" class="text-red-500">Eliminar</button>
+                </div>
+            `).join('');
+            const total = carrito.reduce((acc, p) => acc + p.precio, 0);
+            document.getElementById('cart-total').textContent = `$${(total / 100).toFixed(2)}`;
+            document.getElementById('cart-count').textContent = carrito.length;
+        }
+
+        function eliminarDelCarrito(id) {
+            carrito = carrito.filter(p => p.id !== id);
+            actualizarCarrito();
+        }
+
+        function finalizarCompra() {
+            if (carrito.length === 0) {
+                alert('No hay productos en el carrito');
+                return;
+            }
+
+            alert(`¡Gracias por tu compra! Has comprado ${carrito.length} productos.`);
+            carrito = [];
+            actualizarCarrito();
+            toggleModal('cart-modal');
+        }
+
+        function toggleModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        document.getElementById('cart-toggle').addEventListener('click', () => toggleModal('cart-modal'));
+        document.getElementById('info-toggle').addEventListener('click', () => toggleModal('info-modal'));
+        document.getElementById('close-cart').addEventListener('click', () => toggleModal('cart-modal'));
+        document.getElementById('close-info').addEventListener('click', () => toggleModal('info-modal'));
+        document.getElementById('checkout-btn').addEventListener('click', finalizarCompra);
+
+        renderProductos();
+    </script>
+</body>
+</html>

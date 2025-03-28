@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BADAYS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: black;
+            color: white;
+            text-align: center;
+        }
+
+        #video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        #video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+
+        /* Contenedor general */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            gap: 30px;
+        }
+
+        /* Contenedor de botones a los lados */
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Título en el centro */
+        .header {
+            font-size: 50px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 40px #fff;
+        }
+
+        /* Botones */
+        .modal-button {
+            background-color: transparent;
+            color: white;
+            padding: 15px 30px;
+            border: 2px solid white;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: 0.3s;
+            min-width: 220px;
+        }
+
+        .modal-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Animación de zoom al abrir */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            color: black;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: scale(0.8);
+            opacity: 0;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+
+        .modal.show .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .close {
+            color: red;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: darkred;
+        }
+
+    </style>
+</head>
+<body>
+
+    <video id="video-background" autoplay muted loop>
+        <source src="VIDEO PROMOCIONAL MARCA DE ROPA BADAYS.mp4" type="video/mp4">
+    </video>
+
+    <div id="video-overlay"></div>
+
+    <!-- Contenedor con botones organizados en columnas -->
+    <div class="container">
+        <!-- Columna izquierda -->
+        <div class="column">
+            <button class="modal-button" onclick="openModal('modalNosotros')">Sobre Nosotros</button>
+            <button class="modal-button" onclick="openModal('modalDiferencias')">¿Qué nos hace diferentes?</button>
+            <button class="modal-button" onclick="openModal('modalProductos')">Nuestros Productos</button>
+        </div>
+
+        <!-- Nombre de la tienda en el centro -->
+        <div class="header">BADAYS</div>
+
+        <!-- Columna derecha -->
+        <div class="column">
+            <button class="modal-button" onclick="openModal('modalImpacto')">Nuestro Impacto</button>
+            <button class="modal-button" onclick="openModal('modalRedes')">Síguenos en redes</button>
+            <button class="modal-button" onclick="location.href='mmm.html'">Ir a la segunda página</button>
+        </div>
+    </div>
+
+    <!-- Pestañas emergentes -->
+    <div id="modalNosotros" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modalNosotros')">&times;</span>
+            <h2>Sobre Nosotros</h2>
+            <p>Somos BADAYS, una marca de moda urbana que combina estilo, calidad y autenticidad.</p>
+        </div>
+    </div>
+
+    <div id="modalDiferencias" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modalDiferencias')">&times;</span>
+            <h2>¿Qué nos hace diferentes?</h2>
+            <p>Diseños exclusivos, materiales de calidad y compromiso con la sostenibilidad.</p>
+        </div>
+    </div>
+
+    <div id="modalProductos" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modalProductos')">&times;</span>
+            <h2>Nuestros Productos</h2>
+            <p>Ofrecemos sudaderas, camisetas, pantalones y más.</p>
+        </div>
+    </div>
+
+    <div id="modalImpacto" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modalImpacto')">&times;</span>
+            <h2>Nuestro Impacto</h2>
+            <p>Apoyamos a artistas locales y colaboramos con diseñadores emergentes.</p>
+        </div>
+    </div>
+
+    <div id="modalRedes" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modalRedes')">&times;</span>
+            <h2>Síguenos en redes sociales</h2>
+            <p>Instagram: <a href="#">@badays</a></p>
+        </div>
+    </div>
+
+    <script>
+        function openModal(id) {
+            let modal = document.getElementById(id);
+            modal.classList.add("show");
+            modal.style.display = "block";
+        }
+
+        function closeModal(id) {
+            let modal = document.getElementById(id);
+            modal.classList.remove("show");
+            setTimeout(() => {
+                modal.style.display = "none";
+            }, 300);
+        }
+
+        window.onclick = function(event) {
+            let modals = document.getElementsByClassName("modal");
+            for (let i = 0; i < modals.length; i++) {
+                if (event.target == modals[i]) {
+                    closeModal(modals[i].id);
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
